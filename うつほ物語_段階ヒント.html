@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>うつほ物語 段階ヒント｜苦手分析つき</title>
+<style>
+  :root{
+    --bg:#f6f3ec; --paper:#fffdf8; --ink:#2b2622; --sub:#6b635a;
+    --line:#e2dccf; --accent:#7c4a2d; --accent2:#9e7b3d;
+    --s-small:#2f8f5b; --s-mid:#c77b1f; --s-large:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    line-height:1.8; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:24px 18px 80px;}
+  header.top{
+    border-bottom:3px solid var(--accent); padding-bottom:14px; margin-bottom:8px;
+  }
+  header.top h1{font-size:1.5rem; margin:0 0 4px; letter-spacing:.02em;}
+  header.top .meta{color:var(--sub); font-size:.85rem;}
+  .howto{
+    background:var(--paper); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; margin:16px 0 24px; font-size:.9rem;
+  }
+  .howto b{color:var(--accent);}
+  .howto ol{margin:8px 0 0; padding-left:1.3em;}
+  .progress{
+    position:sticky; top:0; z-index:5; background:var(--bg);
+    padding:10px 0; border-bottom:1px solid var(--line); font-size:.85rem; color:var(--sub);
+  }
+  .progress b{color:var(--ink);}
+  .qcard{
+    background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:16px 18px; margin:16px 0; box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .qhead{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px;}
+  .qno{
+    font-weight:700; color:#fff; background:var(--accent);
+    border-radius:6px; padding:1px 9px; font-size:.92rem; white-space:nowrap;
+  }
+  .qtext{font-weight:600;}
+  .qmeta{color:var(--sub); font-size:.8rem;}
+  details.hint{
+    border:1px solid var(--line); border-radius:8px; margin-top:10px; overflow:hidden;
+    background:#fff;
+  }
+  details.hint > summary{
+    cursor:pointer; list-style:none; padding:9px 12px; display:flex;
+    align-items:center; gap:8px; font-size:.9rem; user-select:none;
+  }
+  details.hint > summary::-webkit-details-marker{display:none}
+  details.hint > summary::before{
+    content:"▸"; color:var(--sub); transition:transform .15s;
+  }
+  details.hint[open] > summary::before{transform:rotate(90deg)}
+  .lv{font-weight:700; border-radius:5px; padding:0 8px; font-size:.8rem; color:#fff;}
+  .lv.s{background:var(--s-small)} .lv.m{background:var(--s-mid)} .lv.l{background:var(--s-large)}
+  .lvname{color:var(--sub); font-size:.78rem;}
+  .hbody{padding:4px 14px 14px;}
+  .hrow{
+    display:flex; gap:9px; align-items:flex-start; padding:8px 0;
+    border-top:1px dashed var(--line);
+  }
+  .hrow:first-child{border-top:none}
+  .hrow input[type=checkbox]{
+    width:20px; height:20px; margin-top:3px; flex:none; cursor:pointer; accent-color:var(--accent);
+  }
+  .hrow .htext{font-size:.9rem;}
+  .tag{
+    display:inline-block; font-size:.72rem; font-weight:700; color:#fff;
+    border-radius:4px; padding:0 6px; margin-right:6px; vertical-align:1px; white-space:nowrap;
+  }
+  .analyze-bar{margin:30px 0 10px; text-align:center;}
+  .btn{
+    font-size:1.05rem; font-weight:700; color:#fff; background:var(--accent);
+    border:none; border-radius:10px; padding:13px 30px; cursor:pointer;
+    box-shadow:0 2px 6px rgba(124,74,45,.3); transition:transform .08s, background .15s;
+  }
+  .btn:hover{background:#67391f}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff; color:var(--accent); border:1.5px solid var(--accent); box-shadow:none; font-size:.9rem; padding:9px 18px;}
+  #result{display:none; margin-top:22px;}
+  .resultcard{
+    background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:18px;
+  }
+  .resultcard h2{margin:0 0 4px; font-size:1.2rem; color:var(--accent);}
+  .canvas-holder{display:flex; justify-content:center;}
+  canvas{max-width:100%;}
+  .findings{margin-top:10px;}
+  .finding{
+    border-left:4px solid var(--accent2); background:#fff; border-radius:0 8px 8px 0;
+    padding:8px 12px; margin:8px 0; font-size:.9rem;
+  }
+  .finding .ft{font-weight:700;}
+  .finding .pct{float:right; color:var(--accent); font-weight:700;}
+  .nofind{color:var(--sub); font-size:.9rem;}
+  footer{margin-top:40px; color:var(--sub); font-size:.78rem; text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>うつほ物語　段階ヒント</h1>
+    <div class="meta">入試標準／群馬県立女子大　─　使ったヒントから「苦手な学力」を分析</div>
+  </header>
+
+  <div class="howto">
+    <b>使い方</b>
+    <ol>
+      <li>まず自力で各問を解く。詰まったら、ヒントを<b>【小】→【中】→【大】</b>の順に開く（大ほど核心に近い）。</li>
+      <li>読んで<b>頼ったヒントのチェックボックスにチェック</b>を入れる。</li>
+      <li>全問終えたら一番下の<b>「苦手分析」</b>を押す。利用ヒントから、不足している学力をレーダーチャートで表示する。</li>
+    </ol>
+    <div style="margin-top:6px; color:var(--sub); font-size:.82rem;">
+      ※【大】のヒントほど苦手と強く判定（小=1・中=2・大=3で重み付け）。チェックは自動保存される。
+    </div>
+  </div>
+
+  <div class="progress" id="progress">利用ヒント <b id="chkcount">0</b> 件</div>
+
+  <div id="questions"></div>
+
+  <div class="analyze-bar">
+    <button class="btn" id="analyzeBtn">苦手分析</button>
+    <div style="margin-top:10px;">
+      <button class="btn ghost" id="resetBtn">チェックを全部消す</button>
+    </div>
+  </div>
+
+  <div id="result">
+    <div class="resultcard">
+      <h2>苦手分析の結果</h2>
+      <div style="color:var(--sub); font-size:.85rem; margin-bottom:8px;">
+        外側ほど「ヒントに頼った＝苦手」。各分類で使えるヒントを満点としたときの利用度（％）。
+      </div>
+      <div class="canvas-holder"><canvas id="radar" width="560" height="520"></canvas></div>
+      <div class="findings" id="findings"></div>
+    </div>
+  </div>
+
+  <footer>うつほ物語 段階ヒント・苦手分析ツール／単一HTML・外部通信なし</footer>
+</div>
+
+<script>
+// ===== 分類定義（色・学習アドバイス）=====
+const CAT = {
+  "重要古語":{c:"#1f6f3c", a:"頻出古語を単語帳で反復。一語一義でなく文脈での意味を確認。"},
+  "古文法":  {c:"#1f3864", a:"助動詞・助詞の意味と接続を体系で整理。係り結びは結びの活用形まで。"},
+  "主語判別":{c:"#7030a0", a:"敬語の方向と文脈から動作主を補う練習。会話文は話者を追う。"},
+  "敬語":    {c:"#c0392b", a:"尊敬・謙譲・丁寧の三種と「誰から誰へ」の方向を毎回確認。"},
+  "識別":    {c:"#0070c0", a:"同形語の識別（む／なり／に／ぬ等）を文法問題で反復。"},
+  "記述表現":{c:"#bf6000", a:"設問の要求要素を分解し、過不足なく・指定字数で書く訓練。"},
+  "和歌修辞":{c:"#9e480e", a:"掛詞・縁語・序詞・本歌取り・み語法など修辞を一通り押さえる。"},
+  "文脈把握":{c:"#595959", a:"指示語・場面転換・心情を前後関係で追う。注も必ず読む。"},
+  "慣用表現":{c:"#2e75b6", a:"呼応の副詞・慣用句をフレーズ単位で暗記する。"},
+  "設問処理":{c:"#548235", a:"選択肢を軸で分類し、本文と矛盾する肢を消去法で外す。"},
+  "古典常識":{c:"#806000", a:"出家・宮廷生活・年中行事などの背景知識を読み物で補う。"},
+};
+const W = {"小":1,"中":2,"大":3};
+const LVCLASS = {"小":"s","中":"m","大":"l"};
+
+// ===== 設問データ（分岐問は独立）=====
+const DATA = [
+ {q:"問1⑴", meta:"3点・現代語訳", t:"傍線部1「人、気色しもぞ見る」を、言葉を補って訳す",
+  hints:[
+   {lv:"小",tag:"文脈把握",text:"山伏が「近くに住め」と言った直後の言葉。誰が・何を気にしているか。"},
+   {lv:"中",tag:"古文法",text:"「気色」＝様子・気配。「もぞ」は一語でなく係助詞の組み合わせ。何を表すか調べる。"},
+   {lv:"大",tag:"古文法",text:"「もぞ」＝「〜したら困る・〜するといけない」と悪い事態を心配する言い方。「人」＝他人。"},
+   {lv:"大",tag:"主語判別",text:"「忠こその何の様子を、他人に見られたら困る」のか──出家を願い出ている状況から特定して補う。"},
+  ]},
+ {q:"問1⑵", meta:"3点・現代語訳", t:"傍線部2「さらにもいはず」を、言葉を補って訳す",
+  hints:[
+   {lv:"小",tag:"文脈把握",text:"直前「親の御上をば」とひとつながりで読む。何についての一言か。"},
+   {lv:"中",tag:"慣用表現",text:"「言ふ」＋打消で作る慣用表現がある。「あえて言わない」ではない。"},
+   {lv:"大",tag:"慣用表現",text:"「言うまでもない」型の慣用表現。親への思いの深さを、口にするまでもないほどだ、という方向で訳す。"},
+  ]},
+ {q:"問1⑶", meta:"3点・現代語訳", t:"傍線部3「水深み」を、言葉を補って訳す",
+  hints:[
+   {lv:"小",tag:"和歌修辞",text:"和歌の中の語。「涙の川」がテーマであることをふまえる。"},
+   {lv:"中",tag:"和歌修辞",text:"「（名詞）を（形容詞語幹）み」という和歌特有の語法。語幹は「深」。"},
+   {lv:"大",tag:"和歌修辞",text:"「み語法」＝「〜が…ので」と原因・理由を表す。「水が深いので」と訳し、後の「あひ見で／淀む」へ因果でつなぐ。"},
+  ]},
+ {q:"問2", meta:"6点・25字以内", t:"傍線部A「さらば、御心にこそあらめ」はどういうことか説明する",
+  hints:[
+   {lv:"小",tag:"文脈把握",text:"会話の流れを追う。忠こそが何を語り、それに山伏がどう応じた場面か。"},
+   {lv:"中",tag:"古文法",text:"「さらば」＝それなら。「御心」＝相手（忠こそ）の意志。「こそ〜め」は結びの活用形に注目。"},
+   {lv:"大",tag:"古文法",text:"「こそ〜め（已然形）」＝係り結び。「あなたの〜次第でしょう」と山伏が忠こその決意を容認する内容。"},
+   {lv:"大",tag:"主語判別",text:"採点要素①「御心」＝誰の心か（忠こそ／あなた）を明示する。"},
+   {lv:"大",tag:"記述表現",text:"②「何が」その人の心次第なのか──直前で語られた“出家するかどうか”を具体的に入れる。③容認・一任のニュアンスを出す。"},
+  ]},
+ {q:"問3", meta:"6点・記述", t:"傍線部B「二つ」とは何と何を指すか説明する",
+  hints:[
+   {lv:"小",tag:"文脈把握",text:"傍線部のすぐ後ろを読む。「二つ」の中身は本文が自分で説明している。"},
+   {lv:"中",tag:"記述表現",text:"「一つには…／今一つには…」という並列の言い方を探す。注4・注5も手がかり。"},
+   {lv:"大",tag:"文脈把握",text:"一つ目：ある人物にもう〜できなくなること（注4の人物との関係）。二つ目：長年親しんだある楽器をもう弾けなくなること（注5）。"},
+   {lv:"大",tag:"記述表現",text:"2要素それぞれに配点があると考え、片方だけにならないよう両方を必ず書く。"},
+  ]},
+ {q:"問4", meta:"6点・記述", t:"傍線部C 和歌の趣旨を、「空蝉」が琴の音のむなしい響きを表すものとして説明する",
+  hints:[
+   {lv:"小",tag:"文脈把握",text:"「弾く人」が誰を指すか、この場面で忠こそが何をしようとしているかから考える。"},
+   {lv:"中",tag:"和歌修辞",text:"「空蝉」＝蝉の抜け殻。そこから連想される意味は？　文末「や…む」は疑問か反語か。"},
+   {lv:"大",tag:"和歌修辞",text:"「弾く人」＝忠こそ自身。「むなしくなる」＝出家して世を捨てる比喩。「空蝉」＝中身のない・むなしさの象徴。"},
+   {lv:"大",tag:"古典常識",text:"趣旨：弾き手の自分がいなくなれば、この琴の音も抜け殻のようにむなしく響くばかりだろう、という嘆き。"},
+   {lv:"大",tag:"記述表現",text:"採点要素：①弾く人＝自分②むなしくなる＝出家・世を捨てる③空蝉＝むなしさの比喩、の3点を盛り込む。"},
+  ]},
+ {q:"問5", meta:"6点・選択", t:"傍線部D についての説明として最適なものを①〜④から選ぶ",
+  hints:[
+   {lv:"小",tag:"設問処理",text:"4つの選択肢が似て見えるときは、違っている部分だけを取り出して比べる。"},
+   {lv:"中",tag:"設問処理",text:"2つの軸で分類する──①出家の決意は「固い」か「揺らぐ」か。②病気は「本物」か「口実」か。"},
+   {lv:"大",tag:"文脈把握",text:"決め手は直前の和歌C──忠こそはすでに出家を決意済み。よって決意は「固い」。"},
+   {lv:"大",tag:"古典常識",text:"「揺らぐ／決意を固めたい」「逢いに来てほしい」とする肢は流れと逆＝誤り。病気を口実に「もう逢えない」と告げる方向の肢が本文に合う。"},
+  ]},
+ {q:"問6", meta:"8点・現代語訳（最大配点）", t:"傍線部E「思さむことのかしこきをなむ、かしこまり思ひたまふる」を、言葉を補って訳す",
+  hints:[
+   {lv:"小",tag:"敬語",text:"敬語が複数ある。誰から誰への敬意か、主語を補いながら読む。"},
+   {lv:"中",tag:"敬語",text:"「思す」＝「思ふ」の尊敬語→主語は相手（梅壺）。「む」＝推量。「かしこし」と「かしこまる」は別の意味。"},
+   {lv:"大",tag:"敬語",text:"「思さむ」＝「思す」（尊敬）＋「む」（推量）。主語は梅壺＝あなた。「かしこまり…たまふる」の「たまふる」は謙譲（自分の動作）。"},
+   {lv:"大",tag:"重要古語",text:"「かしこし」＝恐れ多い／「かしこまる」＝恐縮する。骨組み：「あなたが私をお思いになるであろうことが恐れ多いので、恐縮に存じております」。"},
+   {lv:"大",tag:"古文法",text:"「なむ…たまふる（連体形）」＝係り結び。文末を連体形で結ぶ点も訳に反映。"},
+   {lv:"大",tag:"識別",text:"採点要素が多い：①尊敬「思す」と主語②推量「む」③かしこし＝恐れ多い④かしこまる＝恐縮⑤原因「を（…ので）」。補う語を省かず一つずつ拾う。"},
+  ]},
+];
+
+// ===== 描画 =====
+const LS_KEY = "utsuho_hint_checks_v1";
+let saved = {};
+try{ saved = JSON.parse(localStorage.getItem(LS_KEY)||"{}"); }catch(e){ saved={}; }
+
+const qWrap = document.getElementById("questions");
+let idc = 0;
+DATA.forEach(item=>{
+  const card = document.createElement("div");
+  card.className = "qcard";
+  card.innerHTML = `<div class="qhead">
+      <span class="qno">${item.q}</span>
+      <span class="qtext">${item.t}</span>
+    </div>
+    <div class="qmeta">${item.meta}</div>`;
+  // group hints by level order 小中大
+  ["小","中","大"].forEach(lv=>{
+    const group = item.hints.filter(h=>h.lv===lv);
+    if(!group.length) return;
+    const det = document.createElement("details");
+    det.className = "hint";
+    const lvfull = {"小":"まず着眼点","中":"文法・語彙","大":"核心（答えに近い）"}[lv];
+    let rows = "";
+    group.forEach(h=>{
+      const id = "h"+(idc++);
+      const checked = saved[id] ? "checked" : "";
+      rows += `<label class="hrow">
+          <input type="checkbox" data-id="${id}" data-tag="${h.tag}" data-w="${W[h.lv]}" ${checked}>
+          <span class="htext"><span class="tag" style="background:${CAT[h.tag].c}">${h.tag}</span>${h.text}</span>
+        </label>`;
+    });
+    det.innerHTML = `<summary>
+        <span class="lv ${LVCLASS[lv]}">${lv}</span><span class="lvname">${lvfull}</span>
+      </summary>
+      <div class="hbody">${rows}</div>`;
+    card.appendChild(det);
+  });
+  qWrap.appendChild(card);
+});
+
+const allBoxes = ()=>Array.from(document.querySelectorAll('input[type=checkbox][data-tag]'));
+const chkCount = document.getElementById("chkcount");
+function refreshCount(){ chkCount.textContent = allBoxes().filter(b=>b.checked).length; }
+function persist(){
+  const o={}; allBoxes().forEach(b=>{ if(b.checked) o[b.dataset.id]=1; });
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){}
+}
+qWrap.addEventListener("change", ()=>{ refreshCount(); persist(); });
+refreshCount();
+
+// ===== レーダーチャート（自作）=====
+function drawRadar(canvas, labels, values, colors){
+  const dpr = window.devicePixelRatio||1;
+  // コンテナ幅に追従する正方形（スマホで歪まない）
+  const holder = canvas.parentElement;
+  const W = Math.max(240, Math.min(holder.clientWidth, 560));
+  const H = W; // 正方形
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+"px"; canvas.style.height = H+"px";
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  // 画面が狭いほどラベル余白・フォントを縮める
+  const small = W < 420;
+  const labelGap = small ? 14 : 26;
+  const margin = small ? 40 : 58;
+  const cx=W/2, cy=H/2, R=Math.min(W,H)/2-margin;
+  const n=labels.length;
+  const ang=i=>(-Math.PI/2 + i*2*Math.PI/n);
+  // grid rings
+  ctx.strokeStyle="#e2dccf";
+  for(let g=1; g<=4; g++){
+    const r=R*g/4;
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){const a=ang(i%n); const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.stroke();
+  }
+  // spokes + labels
+  ctx.font=(small?10:12)+"px 'Yu Gothic',sans-serif";
+  for(let i=0;i<n;i++){
+    const a=ang(i); const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    ctx.strokeStyle="#e2dccf"; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+    const lx=cx+(R+labelGap)*Math.cos(a), ly=cy+(R+labelGap)*Math.sin(a);
+    ctx.fillStyle="#2b2622"; ctx.textBaseline="middle";
+    // 端で見切れないよう、左右の軸はラベルを内側に寄せる
+    const cosA=Math.cos(a);
+    ctx.textAlign = cosA>0.3 ? "right" : (cosA<-0.3 ? "left" : "center");
+    ctx.fillText(labels[i], lx, ly);
+  }
+  // data polygon
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){
+    const idx=i%n; const r=R*(values[idx]/100);
+    const a=ang(idx); const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle="rgba(192,57,43,.20)"; ctx.fill();
+  ctx.strokeStyle="#c0392b"; ctx.lineWidth=2; ctx.stroke();
+  // points
+  for(let i=0;i<n;i++){
+    const r=R*(values[i]/100); const a=ang(i);
+    const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+    ctx.beginPath(); ctx.arc(x,y,3.2,0,7); ctx.fillStyle="#c0392b"; ctx.fill();
+  }
+}
+
+// ===== 分析 =====
+const tagsOrder = Object.keys(CAT);
+function analyze(){
+  // max possible per tag (全ヒント重み) & user score (checked)
+  const max={}, score={};
+  tagsOrder.forEach(t=>{max[t]=0; score[t]=0;});
+  allBoxes().forEach(b=>{
+    const t=b.dataset.tag, w=parseInt(b.dataset.w,10);
+    max[t]+=w;
+    if(b.checked) score[t]+=w;
+  });
+  const labels=[], values=[], findings=[];
+  tagsOrder.forEach(t=>{
+    const pct = max[t]>0 ? Math.round(score[t]/max[t]*100) : 0;
+    labels.push(t); values.push(pct);
+    if(score[t]>0) findings.push({t, pct, score:score[t]});
+  });
+  drawRadar(document.getElementById("radar"), labels, values, null);
+
+  // findings text: 上位（弱点）順
+  findings.sort((a,b)=> b.pct-a.pct || b.score-a.score);
+  const fEl=document.getElementById("findings");
+  if(findings.length===0){
+    fEl.innerHTML = `<div class="nofind">チェックされたヒントがありません。自力で解けています。チェックを入れてから分析すると弱点が見えます。</div>`;
+  }else{
+    let html = `<div style="font-weight:700; margin:6px 0 4px;">特に補強したい分類（利用度の高い順）</div>`;
+    findings.slice(0,4).forEach(f=>{
+      html += `<div class="finding">
+        <span class="pct">${f.pct}%</span>
+        <span class="ft"><span class="tag" style="background:${CAT[f.t].c}">${f.t}</span></span>
+        <div style="margin-top:2px; color:var(--sub);">${CAT[f.t].a}</div>
+      </div>`;
+    });
+    fEl.innerHTML = html;
+  }
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+}
+document.getElementById("analyzeBtn").addEventListener("click", analyze);
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  allBoxes().forEach(b=>b.checked=false);
+  refreshCount(); persist();
+  document.getElementById("result").style.display="none";
+});
+</script>
+</body>
+</html>
