@@ -63,8 +63,7 @@
     content:"▸"; color:var(--sub); transition:transform .15s;
   }
   details.hint[open] > summary::before{transform:rotate(90deg)}
-  .lv{font-weight:700; border-radius:5px; padding:0 8px; font-size:.8rem; color:#fff;}
-  .lv.s{background:var(--s-small)} .lv.m{background:var(--s-mid)} .lv.l{background:var(--s-large)}
+  .lv{font-weight:700; font-size:1rem; color:#e0a524; letter-spacing:2px;}
   .lvname{color:var(--sub); font-size:.78rem;}
   .hbody{padding:4px 14px 14px;}
   .hrow{
@@ -117,12 +116,12 @@
   <div class="howto">
     <b>使い方</b>
     <ol>
-      <li>まず自力で各問を解く。詰まったら、ヒントを<b>【小】→【中】→【大】</b>の順に開く（大ほど核心に近い）。</li>
+      <li>まず自力で各問を解く。詰まったら、ヒントを<b>★→★★→★★★</b>の順に開く（★が多いほど核心に近い）。</li>
       <li>読んで<b>頼ったヒントのチェックボックスにチェック</b>を入れる。</li>
       <li>全問終えたら一番下の<b>「苦手分析」</b>を押す。利用ヒントから、不足している学力をレーダーチャートで表示する。</li>
     </ol>
     <div style="margin-top:6px; color:var(--sub); font-size:.82rem;">
-      ※【大】のヒントほど苦手と強く判定（小=1・中=2・大=3で重み付け）。チェックは自動保存される。
+      ※★★★のヒントほど苦手と強く判定（★=1・★★=2・★★★=3で重み付け）。チェックは自動保存される。
     </div>
   </div>
 
@@ -167,7 +166,7 @@ const CAT = {
   "古典常識":{c:"#806000", a:"出家・宮廷生活・年中行事などの背景知識を読み物で補う。"},
 };
 const W = {"小":1,"中":2,"大":3};
-const LVCLASS = {"小":"s","中":"m","大":"l"};
+const STAR = {"小":"★","中":"★★","大":"★★★"};
 
 // ===== 設問データ（分岐問は独立）=====
 const DATA = [
@@ -264,7 +263,7 @@ DATA.forEach(item=>{
         </label>`;
     });
     det.innerHTML = `<summary>
-        <span class="lv ${LVCLASS[lv]}">${lv}</span><span class="lvname">${lvfull}</span>
+        <span class="lv">${STAR[lv]}</span><span class="lvname">${lvfull}</span>
       </summary>
       <div class="hbody">${rows}</div>`;
     // 展開した時点で、その中のヒントを「利用した」とみなしチェックを入れる
