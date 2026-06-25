@@ -267,6 +267,13 @@ DATA.forEach(item=>{
         <span class="lv ${LVCLASS[lv]}">${lv}</span><span class="lvname">${lvfull}</span>
       </summary>
       <div class="hbody">${rows}</div>`;
+    // 展開した時点で、その中のヒントを「利用した」とみなしチェックを入れる
+    det.addEventListener("toggle", ()=>{
+      if(!det.open) return;
+      let changed=false;
+      det.querySelectorAll('input[type=checkbox]').forEach(b=>{ if(!b.checked){ b.checked=true; changed=true; } });
+      if(changed){ refreshCount(); persist(); }
+    });
     card.appendChild(det);
   });
   qWrap.appendChild(card);
