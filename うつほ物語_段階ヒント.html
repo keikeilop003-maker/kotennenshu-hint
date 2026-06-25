@@ -43,6 +43,12 @@
     border-radius:6px; padding:1px 9px; font-size:.92rem; white-space:nowrap;
   }
   .qtext{font-weight:600;}
+  .btn-exp{
+    margin-left:auto; flex:none; cursor:pointer; white-space:nowrap;
+    font-size:.78rem; font-weight:700; color:var(--accent);
+    background:#fff; border:1.5px solid var(--accent); border-radius:6px; padding:3px 12px;
+  }
+  .btn-exp:hover{background:var(--accent); color:#fff;}
   .qmeta{color:var(--sub); font-size:.8rem;}
   details.hint{
     border:1px solid var(--line); border-radius:8px; margin-top:10px; overflow:hidden;
@@ -238,6 +244,7 @@ DATA.forEach(item=>{
   card.innerHTML = `<div class="qhead">
       <span class="qno">${item.q}</span>
       <span class="qtext">${item.t}</span>
+      <button type="button" class="btn-exp" data-exp>全て展開</button>
     </div>
     <div class="qmeta">${item.meta}</div>`;
   // group hints by level order 小中大
@@ -274,6 +281,17 @@ function persist(){
 }
 qWrap.addEventListener("change", ()=>{ refreshCount(); persist(); });
 refreshCount();
+
+// 全て展開／全て閉じる（各問トグル）
+qWrap.addEventListener("click", (e)=>{
+  const btn = e.target.closest("[data-exp]");
+  if(!btn) return;
+  const card = btn.closest(".qcard");
+  const ds = card.querySelectorAll("details.hint");
+  const allOpen = Array.from(ds).every(d=>d.open);
+  ds.forEach(d=> d.open = !allOpen);
+  btn.textContent = allOpen ? "全て展開" : "全て閉じる";
+});
 
 // ===== レーダーチャート（自作）=====
 function drawRadar(canvas, labels, values, colors){
