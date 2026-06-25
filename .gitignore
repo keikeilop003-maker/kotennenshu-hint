@@ -1,0 +1,9 @@
+# 配布物（HTML）以外はリポジトリで管理しない
+*.pdf
+*.docx
+*.original.md
+~$*
+_tmp*
+_remote.html
+_unpacked/
+.claude/
