@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アップリフト 演習ヒント｜教材一覧</title>
+<style>
+  :root{
+    --bg:#f6f3ec; --paper:#fffdf8; --ink:#2b2622; --sub:#6b635a;
+    --line:#e2dccf; --accent:#7c4a2d; --accent2:#9e7b3d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    line-height:1.7; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:24px 18px 80px;}
+  header.top{border-bottom:3px solid var(--accent); padding-bottom:14px; margin-bottom:18px;}
+  header.top h1{font-size:1.5rem; margin:0 0 4px; letter-spacing:.02em;}
+  header.top .meta{color:var(--sub); font-size:.85rem;}
+
+  .controls{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px;}
+  .search{
+    flex:1 1 220px; min-width:180px;
+    border:1.5px solid var(--line); border-radius:9px; padding:9px 12px; font-size:.95rem; background:#fff; color:var(--ink);
+  }
+  .search:focus{outline:none; border-color:var(--accent);}
+  .chips{display:flex; flex-wrap:wrap; gap:7px; margin:6px 0 18px;}
+  .chip{
+    cursor:pointer; font-size:.83rem; font-weight:700; border-radius:999px;
+    padding:5px 14px; border:1.5px solid var(--accent); color:var(--accent); background:#fff; white-space:nowrap;
+  }
+  .chip.active{background:var(--accent); color:#fff;}
+  .count{color:var(--sub); font-size:.82rem; margin-left:auto;}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px;}
+  a.card{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px; transition:transform .08s, box-shadow .15s, border-color .15s;
+  }
+  a.card:hover{transform:translateY(-2px); box-shadow:0 4px 14px rgba(124,74,45,.14); border-color:var(--accent2);}
+  .card .toprow{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .num{font-weight:700; color:#fff; background:var(--accent); border-radius:6px; padding:1px 9px; font-size:.8rem; white-space:nowrap;}
+  .genre{font-size:.74rem; font-weight:700; border-radius:5px; padding:1px 9px; color:#fff; white-space:nowrap;}
+  .card h2{font-size:1.12rem; margin:2px 0 4px;}
+  .card .src{color:var(--sub); font-size:.84rem;}
+  .card .go{margin-top:8px; color:var(--accent); font-weight:700; font-size:.84rem;}
+
+  .state{padding:30px 0; text-align:center; color:var(--sub); font-size:.9rem;}
+  .state.err{color:#a3372a;}
+  .spinner{
+    width:22px; height:22px; border:3px solid var(--line); border-top-color:var(--accent);
+    border-radius:50%; display:inline-block; vertical-align:-5px; margin-right:8px; animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  footer{margin-top:40px; color:var(--sub); font-size:.78rem; text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>アップリフト　演習ヒント</h1>
+    <div class="meta">教材一覧　─　解きながら「苦手な学力」を分析する古文演習</div>
+  </header>
+
+  <div class="controls">
+    <input type="text" class="search" id="search" placeholder="教材名・出典で検索（例：撰集抄、九州大）">
+    <span class="count" id="count"></span>
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div id="list">
+    <div class="state" id="state"><span class="spinner"></span>教材を読み込み中…</div>
+    <div class="grid" id="grid" style="display:none"></div>
+  </div>
+
+  <footer>単一ページ・外部依存なし／教材HTMLを追加してpushすると、この一覧に自動で並びます。</footer>
+</div>
+
+<script>
+// ===== 設定 =====
+const OWNER = "keikeilop003-maker";
+const REPO  = "kotennenshu-hint";
+const BRANCH = "main";
+// ジャンル別の色（未定義は既定色）
+const GENRE_COLOR = {
+  "物語":"#7c4a2d", "説話":"#1f6f3c", "随筆":"#1f3864", "日記":"#7030a0",
+  "和歌":"#9e480e", "評論":"#0070c0", "軍記":"#b3261e", "歴史物語":"#806000",
+};
+const DEFAULT_GENRE_COLOR = "#6b635a";
+
+// ===== 状態 =====
+let courses = [];      // {file,title,source,genre,number}
+let activeGenre = "すべて";
+let keyword = "";
+
+const stateEl = document.getElementById("state");
+const gridEl  = document.getElementById("grid");
+const chipsEl = document.getElementById("chips");
+const countEl = document.getElementById("count");
+
+// ===== メタ抽出 =====
+function parseMeta(html, file){
+  let meta = {file, title:"", source:"", genre:"", number:null};
+  // 1) COURSE-META コメント（JSON）優先
+  const m = html.match(/COURSE-META:\s*(\{[\s\S]*?\})/);
+  if(m){
+    try{
+      const j = JSON.parse(m[1]);
+      meta.title = j.title || ""; meta.source = j.source || "";
+      meta.genre = j.genre || ""; meta.number = (j.number!=null? j.number : null);
+    }catch(e){}
+  }
+  // 2) <meta name="course-*"> で補完
+  const mm = (name)=>{ const r = html.match(new RegExp('<meta\\s+name="course-'+name+'"\\s+content="([^"]*)"')); return r?r[1]:""; };
+  meta.title  = meta.title  || mm("title");
+  meta.source = meta.source || mm("source");
+  meta.genre  = meta.genre  || mm("genre");
+  if(meta.number==null){ const n = mm("number"); meta.number = n? parseInt(n,10) : null; }
+  // 3) <title> フォールバック
+  if(!meta.title){
+    const t = html.match(/<title>([\s\S]*?)<\/title>/);
+    meta.title = t ? t[1].replace(/.*｜/,'').trim() : file.replace(/\.html?$/,'');
+  }
+  return meta;
+}
+
+// ===== 取得 =====
+async function load(){
+  try{
+    const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents?ref=${BRANCH}`;
+    const res = await fetch(api, {headers:{'Accept':'application/vnd.github+json'}});
+    if(!res.ok) throw new Error('GitHub API '+res.status);
+    const files = await res.json();
+    const htmls = files.filter(f=> f.type==="file" && /\.html?$/i.test(f.name) && f.name.toLowerCase()!=="index.html");
+    if(htmls.length===0){ showEmpty(); return; }
+
+    // 各HTMLの先頭だけ取得してメタ抽出（Range対応・軽量）
+    const results = await Promise.all(htmls.map(async f=>{
+      const raw = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${encodeURIComponent(f.name)}`;
+      try{
+        const r = await fetch(raw, {headers:{'Range':'bytes=0-4095'}});
+        const head = await r.text();
+        return parseMeta(head, f.name);
+      }catch(e){
+        return parseMeta('', f.name);
+      }
+    }));
+
+    courses = results.sort((a,b)=>{
+      const an=a.number==null?9999:a.number, bn=b.number==null?9999:b.number;
+      return an-bn || a.title.localeCompare(b.title,'ja');
+    });
+    renderChips();
+    render();
+    stateEl.style.display="none";
+    gridEl.style.display="grid";
+  }catch(e){
+    stateEl.className="state err";
+    stateEl.innerHTML = "読み込みに失敗しました（"+e.message+"）。<br>時間をおいて再読み込みしてください。";
+  }
+}
+
+function showEmpty(){
+  stateEl.className="state";
+  stateEl.textContent = "教材がまだありません。";
+}
+
+// ===== 描画 =====
+function genreColor(g){ return GENRE_COLOR[g] || DEFAULT_GENRE_COLOR; }
+
+function renderChips(){
+  const genres = Array.from(new Set(courses.map(c=>c.genre).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'ja'));
+  const all = ["すべて", ...genres];
+  chipsEl.innerHTML = "";
+  all.forEach(g=>{
+    const b = document.createElement("button");
+    b.className = "chip" + (g===activeGenre?" active":"");
+    b.textContent = g;
+    if(g!=="すべて"){ b.style.borderColor = genreColor(g); if(g===activeGenre){ b.style.background=genreColor(g);} else { b.style.color=genreColor(g);} }
+    b.addEventListener("click", ()=>{ activeGenre=g; renderChips(); render(); });
+    chipsEl.appendChild(b);
+  });
+}
+
+function render(){
+  const kw = keyword.trim();
+  const shown = courses.filter(c=>{
+    const okG = activeGenre==="すべて" || c.genre===activeGenre;
+    const okK = !kw || (c.title+ " " + c.source + " " + c.genre).includes(kw);
+    return okG && okK;
+  });
+  countEl.textContent = `${shown.length} / ${courses.length} 教材`;
+  gridEl.innerHTML = "";
+  shown.forEach(c=>{
+    const a = document.createElement("a");
+    a.className = "card";
+    a.href = "./" + c.file;
+    a.innerHTML = `
+      <div class="toprow">
+        ${c.number!=null? `<span class="num">No.${c.number}</span>`:""}
+        ${c.genre? `<span class="genre" style="background:${genreColor(c.genre)}">${c.genre}</span>`:""}
+      </div>
+      <h2>${c.title}</h2>
+      ${c.source? `<div class="src">${c.source}</div>`:""}
+      <div class="go">解きはじめる →</div>`;
+    gridEl.appendChild(a);
+  });
+  if(shown.length===0){
+    gridEl.innerHTML = `<div class="state">条件に合う教材がありません。</div>`;
+  }
+}
+
+document.getElementById("search").addEventListener("input", (e)=>{ keyword=e.target.value; render(); });
+load();
+</script>
+</body>
+</html>
