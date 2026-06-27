@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アップリフト 演習ヒント｜19 説話③ 撰集抄</title>
+<!-- COURSE-META: {"title":"撰集抄","source":"九州大","genre":"説話","number":19} -->
+<style>
+  :root{
+    --bg:#f6f3ec; --paper:#fffdf8; --ink:#2b2622; --sub:#6b635a;
+    --line:#e2dccf; --accent:#1f6f3c; --accent2:#2e7d32; --core:#b3261e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    line-height:1.8; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:860px; margin:0 auto; padding:24px 18px 80px;}
+  header.top{border-bottom:3px solid var(--accent); padding-bottom:14px; margin-bottom:8px;}
+  header.top h1{font-size:1.5rem; margin:0 0 4px; letter-spacing:.02em;}
+  header.top .meta{color:var(--sub); font-size:.85rem;}
+  .howto{
+    background:var(--paper); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; margin:16px 0 24px; font-size:.9rem;
+  }
+  .howto b{color:var(--accent);}
+  .howto ol{margin:8px 0 0; padding-left:1.3em;}
+  .progress{
+    position:sticky; top:0; z-index:5; background:var(--bg);
+    padding:10px 0; border-bottom:1px solid var(--line); font-size:.85rem; color:var(--sub);
+  }
+  .progress b{color:var(--ink);}
+  .qcard{
+    background:var(--paper); border:1px solid var(--line); border-radius:12px;
+    padding:16px 18px; margin:16px 0;
+  }
+  .qhead{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px;}
+  .qno{font-weight:700; color:#fff; background:var(--accent); border-radius:6px; padding:1px 9px; font-size:.92rem; white-space:nowrap;}
+  .qtext{font-weight:600;}
+  .btn-exp{
+    margin-left:auto; flex:none; cursor:pointer; white-space:nowrap;
+    font-size:.78rem; font-weight:700; color:var(--accent);
+    background:#fff; border:1.5px solid var(--accent); border-radius:6px; padding:3px 12px;
+  }
+  .btn-exp:hover{background:var(--accent); color:#fff;}
+  .qmeta{color:var(--sub); font-size:.8rem; margin-bottom:6px;}
+
+  details.hint{border:1px solid var(--line); border-radius:8px; margin-top:8px; overflow:hidden; background:#fff;}
+  details.hint > summary{
+    cursor:pointer; list-style:none; padding:9px 12px; display:flex;
+    align-items:center; gap:9px; font-size:.9rem; user-select:none;
+  }
+  details.hint > summary::-webkit-details-marker{display:none}
+  details.hint > summary::before{content:"▸"; color:var(--sub); transition:transform .15s; flex:none;}
+  details.hint[open] > summary::before{transform:rotate(90deg)}
+  .hlabel{
+    font-size:.76rem; font-weight:700; color:#fff; border-radius:5px; padding:1px 9px; white-space:nowrap; flex:none;
+  }
+  .cue{color:var(--sub); font-size:.85rem;}
+  details.hint[open] .cue{display:none}
+  details.hint.core{border-color:var(--core);}
+  details.hint.core > summary{background:#fcf0ef;}
+  .hbody{padding:2px 14px 13px;}
+  .hbody .htext{font-size:.92rem; padding:6px 0 2px;}
+  .usedrow{display:flex; align-items:center; gap:8px; margin-top:6px; padding-top:8px; border-top:1px dashed var(--line); font-size:.8rem; color:var(--sub);}
+  .usedrow input[type=checkbox]{width:18px; height:18px; cursor:pointer; accent-color:var(--accent);}
+
+  details.ans{margin-top:12px; border:1.5px solid var(--accent2); border-radius:9px; overflow:hidden; background:#f0f8f0;}
+  details.ans > summary{
+    cursor:pointer; list-style:none; padding:11px 14px; font-weight:700; color:var(--accent);
+    display:flex; align-items:center; gap:8px; font-size:.92rem; background:#d8eedd;
+  }
+  details.ans > summary::-webkit-details-marker{display:none}
+  details.ans > summary::before{content:"▸"; transition:transform .15s;}
+  details.ans[open] > summary::before{transform:rotate(90deg)}
+  .ansbody{padding:6px 16px 16px;}
+  .ansblock{margin-top:12px;}
+  .ansblock h4{margin:0 0 4px; font-size:.86rem; color:var(--accent2); border-left:4px solid var(--accent2); padding-left:8px;}
+  .ansblock .modal{background:#fff; border:1px solid var(--line); border-radius:6px; padding:8px 12px; font-size:.95rem;}
+  .ansblock ul{margin:4px 0 0; padding-left:1.25em; font-size:.9rem;}
+  .ansblock p{margin:2px 0 0; font-size:.9rem;}
+
+  .analyze-bar{margin:30px 0 10px; text-align:center;}
+  .btn{
+    font-size:1.05rem; font-weight:700; color:#fff; background:var(--accent);
+    border:none; border-radius:10px; padding:13px 30px; cursor:pointer;
+    box-shadow:0 2px 6px rgba(31,111,60,.3);
+  }
+  .btn:hover{background:#145a2e}
+  .btn.ghost{background:#fff; color:var(--accent); border:1.5px solid var(--accent); box-shadow:none; font-size:.9rem; padding:9px 18px;}
+  #result{display:none; margin-top:22px;}
+  .resultcard{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:18px;}
+  .resultcard h2{margin:0 0 4px; font-size:1.2rem; color:var(--accent);}
+  .canvas-holder{display:flex; justify-content:center;}
+  canvas{max-width:100%;}
+  .findings{margin-top:10px;}
+  .finding{border-left:4px solid var(--accent2); background:#fff; border-radius:0 8px 8px 0; padding:8px 12px; margin:8px 0; font-size:.9rem;}
+  .finding .ft{font-weight:700;}
+  .finding .pt{float:right; color:var(--accent); font-weight:700;}
+  .nofind{color:var(--sub); font-size:.9rem;}
+  .tag{display:inline-block; font-size:.74rem; font-weight:700; color:#fff; border-radius:4px; padding:0 7px; white-space:nowrap;}
+  footer{margin-top:40px; color:var(--sub); font-size:.78rem; text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>アップリフト　演習ヒント</h1>
+    <div class="meta">19 説話③ 撰集抄　九州大</div>
+  </header>
+
+  <div class="howto">
+    <b>使い方</b>
+    <ol>
+      <li>まず自力で各問を解く。つまったら、ヒントを上から順に開く（下にいくほど核心に近い）。</li>
+      <li>ヒントを開くと「利用した」チェックが自動で入り、苦手分析に反映される。【着眼点】は軽め、その他の分類ヒントは開いた数だけ加算。</li>
+      <li>それでもわからなかったら、最後に解答を開こう。</li>
+      <li>全問終えたら一番下の<b>「苦手分析」</b>を押す。利用ヒントから、不足している学力をレーダーチャートで表示する。</li>
+    </ol>
+  </div>
+
+  <div class="progress" id="progress">利用ヒント <b id="chkcount">0</b> 件</div>
+
+  <div id="questions"></div>
+
+  <div class="analyze-bar">
+    <button class="btn" id="analyzeBtn">苦手分析</button>
+    <div style="margin-top:10px;">
+      <button class="btn ghost" id="resetBtn">チェックを全部消す</button>
+    </div>
+  </div>
+
+  <div id="result">
+    <div class="resultcard">
+      <h2>苦手分析の結果</h2>
+      <div style="color:var(--sub); font-size:.85rem; margin-bottom:8px;">
+        外側に伸びた分類ほど、ヒントに頼った＝苦手。開いたヒント数で加算（【着眼点】は軽め）。
+      </div>
+      <div class="canvas-holder"><canvas id="radar" width="520" height="520"></canvas></div>
+      <div class="findings" id="findings"></div>
+    </div>
+  </div>
+
+  <footer>撰集抄 段階ヒント・苦手分析ツール／単一HTML・外部通信なし</footer>
+</div>
+
+<script>
+const CAT = {
+  "着眼点":  {c:"#8a8378", a:"場面・状況をまず正確につかむ基礎読解。注や前後の文脈から「誰が・どこで・何を」を把握する練習を。"},
+  "重要古語":{c:"#1f6f3c", a:"頻出古語を単語帳で反復。一語一義でなく文脈での意味を確認。"},
+  "古文法":  {c:"#1f3864", a:"助動詞・助詞の意味と接続を体系で整理。係り結びは結びの活用形まで。"},
+  "主語判別":{c:"#7030a0", a:"敬語の方向と文脈から動作主を補う練習。会話文は話者を追う。"},
+  "敬語":    {c:"#c0392b", a:"尊敬・謙譲・丁寧の三種と「誰から誰へ」の方向を毎回確認。"},
+  "識別":    {c:"#0070c0", a:"同形語の識別（む／なり／に／ぬ等）を文法問題で反復。"},
+  "記述表現":{c:"#bf6000", a:"設問の要求要素を分解し、過不足なく・指定字数で書く訓練。"},
+  "和歌修辞":{c:"#9e480e", a:"掛詞・縁語・序詞・本歌取り・み語法など修辞を一通り押さえる。"},
+  "文脈把握":{c:"#595959", a:"指示語・場面転換・心情を前後関係で追う。注も必ず読む。"},
+  "慣用表現":{c:"#2e75b6", a:"呼応の副詞・慣用句をフレーズ単位で暗記する。"},
+  "設問処理":{c:"#548235", a:"選択肢を軸で分類し、本文と矛盾する肢を消去法で外す。"},
+  "古典常識":{c:"#806000", a:"出家・宮廷生活・年中行事などの背景知識を読み物で補う。"},
+};
+const PT_ATTEN = 0.5;
+const PT_NORM  = 1;
+
+const DATA = [
+ {q:"問1", meta:"4点・選択", t:"傍線部Ａ「いかにしてかは露の命をもささへけんと、いとおぼつかなくぞ侍る」──心配した理由として最も適切なものを①〜④から選ぶ",
+  hints:[
+   {kind:"着眼点", text:"第一段落で、この僧の生活がどう描かれているか確認しよう。何が「ない」かに注目。"},
+   {kind:"通常", cat:"重要古語", text:"「おぼつかなし」= 心もとない・はっきりしない・気がかりだ。傍線部は「どうやって命をつないでいるのか、とても心配だ」という意味。"},
+   {kind:"通常", cat:"文脈把握", text:"直前「身にまとふ麻の衣のほかは…もたるものなければ」「かたらひ参るたぐひもなし」── 何も所持せず、訪問者もいない。これを踏まえて選択肢を絞る。"},
+   {kind:"通常", cat:"設問処理", text:"選択肢の判断軸は「何について心配しているか」。①生計の手段、②崇高さを感じた、③修行方法が不明、④悪事の疑い。「命をいかにして支えているのか」という心配と一致するのはどれか。"},
+   {kind:"核心", cat:"設問処理", text:"「いかにしてかは露の命をもささへけん」= どのようにして（あれほど頼りなく）命を保っているのか。何も持たず人との交際もない → 生計の手段が見えない → ①が正解。②③は本文に根拠なし。④「悪事」は本文に一切ない。"},
+  ],
+  answer:"①",
+  criteria:["①を選ぶ（完答4点）"],
+  explain:"傍線Aは「どのようにして（これほどわずかに）命を維持しているのか、本当に心もとない」という意。直前に「身にまとふ麻の衣のほかは、本尊持経よりはじめて、もたるものなければ」「かたらひ参るたぐひもなし」とある。麻の衣以外は何も持たず訪問者もいない → 生計の手段が見当たらない、という心配が①と一致する。②「崇高さ」・③「修行方法の不明」は傍線部の「命をいかに支えるか」という心配とはズレる。④「悪事」は本文に根拠がない。"},
+
+ {q:"問2⑴", meta:"5点・現代語訳", t:"波線部１「あやなくおぼえて」を現代語訳する",
+  hints:[
+   {kind:"着眼点", text:"大臣が使者を送ったが僧は返事をしなかった。その使者が感じたことを述べた部分。"},
+   {kind:"通常", cat:"重要古語", text:"「あやなし」（形容詞）= 道理がない・わけがわからない（「文無し」とも）。「あやなく」はその連用形。"},
+   {kind:"通常", cat:"古文法", text:"「おぼゆ」= 自発・可能の動詞「思われる・感じられる」。「おぼえて」は連用形＋接続助詞「て」。"},
+   {kind:"核心", cat:"重要古語", text:"「あやなく（わけのわからないことに）おぼえて（思えて）」→ 「わけのわからないことに思えて」。採点は あやなく＝3点・おぼえて＝2点。"},
+  ],
+  answer:"わけのわからないことに思えて",
+  criteria:["「あやなく」＝「わけのわからない（道理のない）」などの意（3点）","「おぼえて」＝「思えて・感じられて」の訳出（2点）"],
+  explain:"「あやなし」は「道理がない・わけがわからない」を意味する形容詞。「おぼゆ」は自発の動詞で「思われる」の意。使者は返事もなく消えた僧の行動に「わけがわからない」と感じた。採点は「あやなく」3点・「おぼえて」2点の分割採点。"},
+
+ {q:"問2⑵", meta:"5点・現代語訳", t:"波線部２「なにたてりけん」を現代語訳する",
+  hints:[
+   {kind:"着眼点", text:"僧が庵の板に書き残した和歌「すぎゆきしかたもくやしし柴の庵わがすみかとてなにたてりけん」の末尾の語。歌全体の意味（後悔の歌）を踏まえる。"},
+   {kind:"通常", cat:"重要古語", text:"「なに」（疑問副詞）= なぜ・どうして。「なにしに」の短縮形。"},
+   {kind:"通常", cat:"古文法", text:"「たてり」= 「たて（建て）」+ 完了・存続の助動詞「り」。ここでは「建てた（設けた）」という過去の行為を指す。"},
+   {kind:"通常", cat:"古文法", text:"「けん（けむ）」= 過去推量の助動詞。過去のことを疑問・推量して「〜だったのだろうか」。"},
+   {kind:"核心", cat:"古文法", text:"「なに（なぜ）たてり（建てて・設けて）けん（しまったのだろうか）」→「なぜ設けてしまったのだろうか」。採点は各要素で分割。"},
+  ],
+  answer:"なぜ設けてしまったのだろうか",
+  criteria:["「なに」＝「なぜ」の疑問副詞として訳出（2点）","「たてり」＝「建てて・設けて」などの訳出（1点）","「けん」＝「〜だったのだろうか・〜てしまったのだろうか」などの訳出（2点）"],
+  explain:"「なに」は「なぜ・どうして」を意味する疑問副詞。「たてり」は「建て」（自動詞「たつ」の連用形）+完了助動詞「り」。「けん（けむ）」は過去推量で「〜だったのだろうか」の意。僧が庵を建てたことを後悔して詠んだ歌で、「（こんな）庵など、なぜ設けてしまったのだろうか」という意味。"},
+
+ {q:"問3", meta:"7点・記述", t:"傍線部Ｂ「このよし」はどのようなことを指すか、説明する",
+  hints:[
+   {kind:"着眼点", text:"「このよし（このよし＝この事情・このこと）」。使者が大臣に「申す」内容。直前で何が起きたかを整理する。"},
+   {kind:"通常", cat:"文脈把握", text:"直前の二つの出来事: ①「御返事をだに申されざりければ」＝僧が返事すらしなかった。②「このすみかをばひきたてて、あとかたなくぞなりにける」＝住みかを引き払って姿を消した。"},
+   {kind:"通常", cat:"記述表現", text:"「指すか、説明せよ」は2要素の記述。①返事をしなかったこと、②呼び出しに応じなかった（姿を消した）こと、の両方を含める。片方だけでは減点。"},
+   {kind:"核心", cat:"記述表現", text:"「僧が返事もせず（住みかを引き払い姿を消して）、大臣の呼び出しにも応じなかったこと」の方向でまとめる。採点は ①返事をしなかった 3点・②呼び出しに応じなかった 4点。"},
+  ],
+  answer:"僧が御返事もせず、住みかを引き払って、大臣の呼び出しにも応じなかったこと。",
+  criteria:["「返事をしなかった（返事すらしない）」という内容（3点）","「大臣の呼び出しに応じなかった（姿を消した・拒否した）」という内容（4点）"],
+  explain:"「このよし」は「このこと・この事情」を指す指示語。直前の文から、使者が大臣に報告した内容は「①僧が返事もせず」「②かさねて呼び出しを受けても住みかを引き払って姿を消した（呼び出しを拒否した）」という二点。採点は①3点・②4点の分割。"},
+
+ {q:"問4", meta:"4点・選択", t:"傍線部Ｃ「あらぬこと」はどのようなことをいっているのか、最も適切なものを①〜④から選ぶ",
+  hints:[
+   {kind:"着眼点", text:"第三段落。「わが身をここに置くゆゑに、あらぬことを聞くことのむつかしさよ」= 自分がここにいるせいで…を経験するのが厄介だ、という意。「あらぬこと」が何かを考える。"},
+   {kind:"通常", cat:"重要古語", text:"「あらぬ」= 「あらず」の連体形 = あるべきでない・関係のない・思いがけない（本来ないはずの）。"},
+   {kind:"通常", cat:"文脈把握", text:"第二段落の出来事を踏まえる。徳大寺の大臣が使者を送ってきた = 俗世の権力者から呼び出された。これが修行者にとって「あるべきでないこと」。"},
+   {kind:"通常", cat:"設問処理", text:"①「使者が間違えて報告」→本文に根拠なし。②「素性を問いただされた」→問いただしはない。③「世間の噂で大臣に興味を持たれ呼び出しを受けた」。④「疑いの念で受け止められた」→本文の流れと合わない。"},
+   {kind:"核心", cat:"設問処理", text:"「あらぬこと」= 自分（修行者）には本来関係ない・あるべきでない俗世の事 = 自分の生活が世間の噂となり、高貴な方に興味を持たれて呼び出しを受けたこと → ③が正解。"},
+  ],
+  answer:"③",
+  criteria:["③を選ぶ（完答4点）"],
+  explain:"「あらぬ」は「あるべきでない・関係のない・思いがけない」の意の連体形。「あらぬことを聞く」= 本来自分には無縁の（俗世の）ことを経験すること。第二段落で徳大寺の大臣が使者を送った出来事が背景にあり、「自分の生活が世間の噂となり、高貴な方に興味をもたれて呼び出しを受けた」（③）が「あらぬこと」の内容と一致する。①は使者が間違えた記述が本文にない。②「素性を問いただした」は本文に根拠がない。④は疑いの念を受けたことを指すが、大臣の行動は興味・好奇心から来るものであり不適切。"},
+
+ {q:"問5", meta:"10点・記述（50字以内）", t:"傍線部Ｄ「げにげにうらやましくぞ侍る」── 何をうらやましいと思っているのか、句読点とも50字以内で具体的に記す",
+  hints:[
+   {kind:"着眼点", text:"「うらやましい」の直前を確認。「それに、わが身のほかにはものももたで…」以下が何をうらやましいと思う根拠になっている。"},
+   {kind:"通常", cat:"重要古語", text:"「心ばせ」= 心の持ち方・心根・心のありよう。「いさぎよし」= 清潔だ・欲がない・潔い。"},
+   {kind:"通常", cat:"文脈把握", text:"直前「わが身のほかにはものももたで」= 自分の身以外は何も持たず、「わづかのすみかをさへくやしむほどの心ばせ」= わずかな庵でさえ後悔するほどの心の持ち方、「さぞいさぎよかりけん」= きっと潔かったに違いない。"},
+   {kind:"通常", cat:"記述表現", text:"50字以内で「何を」具体的に記す。主語は作者（筆者）、うらやましい対象は「僧の〇〇な生き方・心の持ち方」。採点要素は①何も持たないこと②庵でさえ後悔するほどの執着のなさ③清らかな心、の三点。"},
+   {kind:"核心", cat:"記述表現", text:"「身のほかに何も所持せず、わずかな庵でさえ後悔するほど物への執着を断ち切った、清らかな心の持ち方（いさぎよさ）」をうらやましいと思っている。この三要素を50字以内にまとめる。"},
+  ],
+  answer:"身のほかに何も所持せず、わずかな庵でさえ後悔するほど物への執着を断ち切った、清らかな心の持ち方。（48字）",
+  criteria:["「身のほかに何も持たない（所持しない）」という内容（3点）","「わずかな庵でさえ後悔するほどの執着のなさ」という内容（4点）","「清らかな・潔い心の持ち方（心ばせ）」への言及（3点）"],
+  explain:"傍線D直前の「それに、わが身のほかにはものももたで、わづかのすみかをさへくやしむほどの心ばせ、げに、さぞいさぎよかりけん」が根拠。「心ばせ」は心の有り様、「いさぎよし」は欲がなく清廉なさま。作者は、自分の身一つ以外は一切持たず、わずかの庵でさえ建てたことを後悔するほど物への執着を断ち切った清らかな心の持ち方をうらやましいと言っている。採点は①3点・②4点・③3点の分割。"},
+
+ {q:"問6", meta:"12点・記述", t:"傍線部Ｅ「本意のごとく」はどのようなことをいっているのか、具体的に説明する",
+  hints:[
+   {kind:"着眼点", text:"「本意」= 本来の志・もともとの願い。この僧の「本意」が何であるかを、第三段落の内容から読み取る。"},
+   {kind:"通常", cat:"古典常識", text:"「本意」は出家修行者にとって「まことの悟りを得ること・世俗の執着を完全に断ち切ること」を指すことが多い（本文の「まことのさとり」と対応）。"},
+   {kind:"通常", cat:"文脈把握", text:"第三段落「わが身のほかにはものももたで、わづかのすみかをさへくやしむほどの心ばせ」→ 僧の本意は物欲を一切断ち切ること。第四段落「よもまた柴のいほりをもむすびていませじ」= もう庵も結ばないだろう。"},
+   {kind:"通常", cat:"記述表現", text:"採点要素（各4点）は①物欲を一切断ち切った生き方、②大臣の呼び出しも拒否するほど世俗との関わりを絶つ、③庵も捨てて山野に身を隠す。この3点を盛り込む。"},
+   {kind:"核心", cat:"記述表現", text:"「俗世の物欲を一切断ち、大臣の呼び出しにも応じず庵さえも捨てて山野に身を潜め、世俗との関わりを完全に絶った本来の願いどおりの生き方を実現しているということ」。この方向でまとめる。"},
+  ],
+  answer:"俗世の物欲を一切断ち、大臣の呼び出しにも応じず、庵を捨てて山野に身を潜め、世俗との関わりを完全に絶った本来の願いどおりの生き方を実現しているということ。",
+  criteria:["「世俗の物欲・執着を一切断ち切った（何も所持しない）」という内容（4点）","「大臣の呼び出しにも応じず世俗との関わりを拒絶した」という内容（4点）","「庵も捨てて山野に身を潜め、本来の願いを実現している」という内容（4点）"],
+  explain:"「本意」は「もともとの願い・本来の意向」。第三段落から、この聖は物欲のない清廉な心の持ち主で、わずかな庵でさえ後悔していた。第四段落「よもまた柴のいほりをもむすびていませじ」= もう二度と庵も結ばないだろう、と作者が推測。「本意のごとく」= 俗世の物欲を一切断ち、大臣の呼び出しにも応じず（第二段落）、庵さえも捨てて山野のどこかに姿を隠し、世俗との関わりをすべて断った本来の願い（まことの出離・悟り）どおりに生きているということ。採点は各要素4点×3の分割。"},
+
+ {q:"文法", meta:"各1点（計3点）", t:"第三段落と第四段落から尊敬語（動詞）を三つ抜き出し、終止形で答える",
+  hints:[
+   {kind:"着眼点", text:"第三段落（「この歌の心をおろおろ心うるに…」）と第四段落（「さてもこの人は…」）に絞って探す。"},
+   {kind:"通常", cat:"敬語", text:"尊敬語（動詞）= 動作の主体を高める語。古典では「いらっしゃる」にあたる「います（いまします）」「おはす（おはします）」が頻出。"},
+   {kind:"通常", cat:"古文法", text:"「います（いまします）」はサ行変格活用の尊敬語。活用形: 未然いまさ・連用いまし・終止います・己然いませ。「おはします」も同様のサ変。"},
+   {kind:"通常", cat:"識別", text:"第三段落「いまそかりけん」→ います系。第四段落「いませじ」「いまして」→ います系。「おはしけんと」→ おはします系。これらを見つけ、終止形に直す。"},
+   {kind:"核心", cat:"敬語", text:"三つの尊敬語（終止形）: ①います（第三段落「いまそかりけん」）②います（第四段落「いませじ」）③おはします（第四段落「おはしけんと」）。"},
+  ],
+  answer:"①います　②います　③おはします",
+  criteria:["「います」（第三段落：「いまそかりけん」の終止形）（1点）","「います」（第四段落：「いませじ」または「いまして」の終止形）（1点）","「おはします」（第四段落：「おはしけんと」の終止形）（1点）"],
+  explain:"「います（いまします）」はサ行変格活用の尊敬語で「いらっしゃる」の意。第三段落「いまそかりけん」（この人はどれほど心清らかでいらっしゃったことだろう）、第四段落「いませじ」（もう庵を結んでいらっしゃらないだろう）「いまして」（いらっしゃって）がその活用形。「おはします」はより高い敬意を表す尊敬語で、第四段落「おはしけんと」（いらっしゃったことだろう）がその連用形。すべて聖（この人）を尊敬して用いている。"},
+];
+
+const LS_KEY = "senjusho_hint_checks_v1";
+let saved = {};
+try{ saved = JSON.parse(localStorage.getItem(LS_KEY)||"{}"); }catch(e){ saved={}; }
+
+function hintMeta(h){
+  if(h.kind==="着眼点") return {label:"着眼点", cat:"着眼点", pt:PT_ATTEN, badge:CAT["着眼点"].c, core:false};
+  if(h.kind==="核心")   return {label:"核心ヒント", cat:h.cat, pt:PT_NORM, badge:"#b3261e", core:true};
+  return {label:h.cat, cat:h.cat, pt:PT_NORM, badge:CAT[h.cat].c, core:false};
+}
+
+const qWrap = document.getElementById("questions");
+let idc = 0;
+DATA.forEach(item=>{
+  const card = document.createElement("div");
+  card.className = "qcard";
+  card.innerHTML = `<div class="qhead">
+      <span class="qno">${item.q}</span>
+      <span class="qtext">${item.t}</span>
+      <button type="button" class="btn-exp" data-exp>全て展開</button>
+    </div>
+    <div class="qmeta">${item.meta}</div>`;
+
+  item.hints.forEach(h=>{
+    const m = hintMeta(h);
+    const id = "h"+(idc++);
+    const checked = saved[id] ? "checked" : "";
+    const det = document.createElement("details");
+    det.className = "hint" + (m.core ? " core" : "");
+    det.innerHTML = `<summary>
+        <span class="hlabel" style="background:${m.badge}">${m.label}</span>
+        <span class="cue">クリックしてヒントを見る</span>
+      </summary>
+      <div class="hbody">
+        <div class="htext">${h.text}</div>
+        <label class="usedrow">
+          <input type="checkbox" data-id="${id}" data-cat="${m.cat}" data-pt="${m.pt}" ${checked}>
+          このヒントを利用した（苦手分析に反映）
+        </label>
+      </div>`;
+    det.addEventListener("toggle", ()=>{
+      if(!det.open) return;
+      const b = det.querySelector('input[type=checkbox]');
+      if(b && !b.checked){ b.checked=true; refreshCount(); persist(); }
+    });
+    card.appendChild(det);
+  });
+
+  const ans = document.createElement("details");
+  ans.className = "ans";
+  let critHtml = item.criteria.map(c=>`<li>${c}</li>`).join("");
+  ans.innerHTML = `<summary>解答・採点基準・解説を見る</summary>
+    <div class="ansbody">
+      <div class="ansblock"><h4>模範解答</h4><div class="modal">${item.answer}</div></div>
+      <div class="ansblock"><h4>採点基準</h4><ul>${critHtml}</ul></div>
+      <div class="ansblock"><h4>解説</h4><p>${item.explain}</p></div>
+    </div>`;
+  card.appendChild(ans);
+
+  qWrap.appendChild(card);
+});
+
+const allBoxes = ()=>Array.from(document.querySelectorAll('input[type=checkbox][data-cat]'));
+const chkCount = document.getElementById("chkcount");
+function refreshCount(){ chkCount.textContent = allBoxes().filter(b=>b.checked).length; }
+function persist(){
+  const o={}; allBoxes().forEach(b=>{ if(b.checked) o[b.dataset.id]=1; });
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(o)); }catch(e){}
+}
+qWrap.addEventListener("change", ()=>{ refreshCount(); persist(); });
+refreshCount();
+
+qWrap.addEventListener("click", (e)=>{
+  const btn = e.target.closest("[data-exp]");
+  if(!btn) return;
+  const card = btn.closest(".qcard");
+  const ds = card.querySelectorAll("details.hint");
+  const allOpen = Array.from(ds).every(d=>d.open);
+  ds.forEach(d=> d.open = !allOpen);
+  btn.textContent = allOpen ? "全て展開" : "全て閉じる";
+});
+
+const catOrder = Object.keys(CAT);
+function analyze(){
+  const maxP={}, score={};
+  catOrder.forEach(c=>{maxP[c]=0; score[c]=0;});
+  allBoxes().forEach(b=>{
+    const c=b.dataset.cat, pt=parseFloat(b.dataset.pt);
+    maxP[c]+=pt;
+    if(b.checked) score[c]+=pt;
+  });
+  const axes = catOrder.filter(c=>maxP[c]>0);
+  const labels = axes.slice();
+  const values = axes.map(c=>score[c]);
+  const scaleMax = Math.max(...axes.map(c=>maxP[c]), 1);
+  drawRadar(document.getElementById("radar"), labels, values, scaleMax);
+
+  const findings = axes.filter(c=>score[c]>0).map(c=>({c, s:score[c]}));
+  findings.sort((a,b)=> b.s-a.s);
+  const fEl=document.getElementById("findings");
+  if(findings.length===0){
+    fEl.innerHTML = `<div class="nofind">チェックされたヒントがありません。自力で解けています。つまったヒントを開いてから分析すると弱点が見えます。</div>`;
+  }else{
+    let html = `<div style="font-weight:700; margin:6px 0 4px;">特に補強したい分類（利用ポイントの高い順）</div>`;
+    findings.slice(0,4).forEach(f=>{
+      html += `<div class="finding">
+        <span class="pt">${f.s} pt</span>
+        <span class="ft"><span class="tag" style="background:${CAT[f.c].c}">${f.c}</span></span>
+        <div style="margin-top:2px; color:var(--sub);">${CAT[f.c].a}</div>
+      </div>`;
+    });
+    fEl.innerHTML = html;
+  }
+  document.getElementById("result").style.display="block";
+  document.getElementById("result").scrollIntoView({behavior:"smooth", block:"start"});
+}
+document.getElementById("analyzeBtn").addEventListener("click", analyze);
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  allBoxes().forEach(b=>b.checked=false);
+  document.querySelectorAll("details.hint").forEach(d=>d.open=false);
+  document.querySelectorAll(".btn-exp").forEach(b=>b.textContent="全て展開");
+  refreshCount(); persist();
+  document.getElementById("result").style.display="none";
+});
+
+function drawRadar(canvas, labels, values, scaleMax){
+  const dpr = window.devicePixelRatio||1;
+  const holder = canvas.parentElement;
+  const W = Math.max(240, Math.min(holder.clientWidth, 520));
+  const H = W;
+  canvas.width = W*dpr; canvas.height = H*dpr;
+  canvas.style.width = W+"px"; canvas.style.height = H+"px";
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const small = W < 430;
+  const labelGap = small ? 14 : 24;
+  const margin = small ? 44 : 60;
+  const cx=W/2, cy=H/2, R=Math.min(W,H)/2-margin;
+  const n=labels.length;
+  const ang=i=>(-Math.PI/2 + i*2*Math.PI/n);
+  ctx.strokeStyle="#e2dccf";
+  for(let g=1; g<=4; g++){
+    const r=R*g/4; ctx.beginPath();
+    for(let i=0;i<=n;i++){const a=ang(i%n); const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a); i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.stroke();
+  }
+  ctx.font=(small?10:12)+"px 'Yu Gothic',sans-serif";
+  for(let i=0;i<n;i++){
+    const a=ang(i); const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    ctx.strokeStyle="#e2dccf"; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+    const lx=cx+(R+labelGap)*Math.cos(a), ly=cy+(R+labelGap)*Math.sin(a);
+    ctx.fillStyle="#2b2622"; ctx.textBaseline="middle";
+    const cosA=Math.cos(a);
+    ctx.textAlign = cosA>0.3 ? "right" : (cosA<-0.3 ? "left" : "center");
+    ctx.fillText(labels[i], lx, ly);
+  }
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){
+    const idx=i%n; const r=R*(values[idx]/scaleMax);
+    const a=ang(idx); const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle="rgba(31,111,60,.18)"; ctx.fill();
+  ctx.strokeStyle="#1f6f3c"; ctx.lineWidth=2; ctx.stroke();
+  for(let i=0;i<n;i++){
+    const r=R*(values[i]/scaleMax); const a=ang(i);
+    const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+    ctx.beginPath(); ctx.arc(x,y,3.2,0,7); ctx.fillStyle="#1f6f3c"; ctx.fill();
+  }
+}
+</script>
+</body>
+</html>
