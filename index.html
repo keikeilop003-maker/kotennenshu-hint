@@ -103,14 +103,14 @@ const countEl = document.getElementById("count");
 
 // ===== メタ抽出 =====
 function parseMeta(html, file){
-  let meta = {file, title:"", source:"", genre:"", number:null};
+  let meta = {file, title:"", source:"", genre:"", level:"", number:null};
   // 1) COURSE-META コメント（JSON）優先
   const m = html.match(/COURSE-META:\s*(\{[\s\S]*?\})/);
   if(m){
     try{
       const j = JSON.parse(m[1]);
       meta.title = j.title || ""; meta.source = j.source || "";
-      meta.genre = j.genre || ""; meta.number = (j.number!=null? j.number : null);
+      meta.genre = j.genre || ""; meta.level = j.level || ""; meta.number = (j.number!=null? j.number : null);
     }catch(e){}
   }
   // 2) <meta name="course-*"> で補完
@@ -118,6 +118,7 @@ function parseMeta(html, file){
   meta.title  = meta.title  || mm("title");
   meta.source = meta.source || mm("source");
   meta.genre  = meta.genre  || mm("genre");
+  meta.level  = meta.level  || mm("level");
   if(meta.number==null){ const n = mm("number"); meta.number = n? parseInt(n,10) : null; }
   // 3) <title> フォールバック
   if(!meta.title){
@@ -201,6 +202,7 @@ function render(){
     a.innerHTML = `
       <div class="toprow">
         ${c.number!=null? `<span class="num">No.${c.number}</span>`:""}
+        ${c.level? `<span class="level">${c.level}</span>`:""}
         ${c.genre? `<span class="genre" style="background:${genreColor(c.genre)}">${c.genre}</span>`:""}
       </div>
       <h2>${c.title}</h2>
